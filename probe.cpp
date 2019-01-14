@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QTimer>
 
+
 Probe::Probe(QObject *parent)
     : QObject(parent)
 {
@@ -10,25 +11,17 @@ Probe::Probe(QObject *parent)
     m_client->setClientId("PROBE_CLIENT");
     m_client->setHostname("localhost");
     m_client->setPort(1883);
-    sampling = 1000;
 
     connect(m_client, &QMqttClient::connected, this, &Probe::onConnect);
 
-    connect(m_client, &QMqttClient::messageReceived, this, [](const QByteArray &message) {
-        qDebug() << qUtf8Printable(message);
-        //sampling = message.toInt();
-        //QTimer::singleShot(message.toInt(),this, SLOT (doWork()));
+    connect(m_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message) {
+        qDebug() << "New sampling Interval: " << message.toInt();
+        timer.setInterval(message.toInt());
     });
 
-    //QTimer::singleShot(sampling,this, SLOT (doWork()));
     connect(&timer, SIGNAL (timeout()), this, SLOT (doWork()));
-    timer.start(sampling);
+    timer.start(1000);
 }
-/*
-void Probe::setSampling(int sampling)
-{
-    timer.setInterval(sampling);
-}*/
 
 void Probe::init()
 {
@@ -93,9 +86,8 @@ QString Probe::GetCPULoad()
     double total_work = diff_cpu_user + diff_cpu_system;
     double total = diff_cpu_user + diff_cpu_system + diff_cpu_idle + diff_cpu_nice + diff_cpu_ioWait;
 
-    int64_t load = static_cast<int>(total_work/total*100);
-    QString cpuLoad = QString::number(load); //.append("%");
-    //QString cpuLoad = QString::number(total_work/total*100).append("%");
+    int64_t load = static_cast<int64_t>(total_work/total*100);
+    QString cpuLoad = QString::number(load).append("%");
 
     // update old values for next reading
     _cpu_user = now_cpu_user;

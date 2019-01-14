@@ -9,7 +9,7 @@ class Probe : public QObject
 {
     Q_OBJECT
 public:
-    explicit Probe(QObject *parent = 0);
+    explicit Probe(QObject *parent = nullptr);
 
     void init();
 
@@ -18,10 +18,6 @@ signals:
 public slots:
     void onConnect();
     void doWork();
-
-    QString getCpuTemperature();
-    QString GetCPULoad();
-    QString getDiskFreeSpace();
 
 private:
     QMqttClient *m_client;
@@ -38,6 +34,10 @@ private:
     const QString TOPIC_CPU_TEMP = "/probe/cpu/temp";
     const QString TOPIC_CPU_LOAD = "/probe/cpu/load";
     const QString TOPIC_DISK_FREE ="/probe/disk/free";
+
+    QString getCpuTemperature();
+    QString GetCPULoad();
+    QString getDiskFreeSpace();
 };
 
 #endif // PROBE_H
