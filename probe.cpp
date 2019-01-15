@@ -47,14 +47,14 @@ QString Probe::getCpuTemperature()
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly)) {
-        return "";
+        return "Error opening file";
     }
 
     QTextStream in(&file);
     QString line = in.readLine();
     double value = line.toDouble();
 
-    return QString::number(value/1000);
+    return QString::number(value/1000).append("C°");
 }
 
 QString Probe::GetCPULoad()
