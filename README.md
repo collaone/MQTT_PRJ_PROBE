@@ -1,2 +1,14 @@
 # MQTT_PRJ_PROBE
-Probe Application
+Probe Application that read cpu temperature, cpu usage and free disk space on root.
+Theese values are published using MQttClient.
+The application subscribe a command topic to change sampling interval.
+
+This is part of a example test, MQTT_PRJ_DATADISPLAY is the application that interact with the probe.
+
+
+
+### Note:
+It works on linus system.
+
+## Usage
+Install a MQTT broker (e.g. mosquitto)
