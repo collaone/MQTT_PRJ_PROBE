@@ -29,15 +29,26 @@ void Probe::init()
     m_client->connectToHost();
 }
 
+/**
+ * @brief Probe::doWork
+ * Publish probed values
+ */
 void Probe::doWork()
 {
+    QString cpuTemp = getCpuTemperature();
+    QString cpuLoad = GetCPULoad();
+    QString diskFree = getDiskFreeSpace();
+
+    qDebug() << " - CPU Temp: " << cpuTemp
+             << " - CPU Load: " << cpuLoad
+             << " - Disk free space: " << diskFree;
     qDebug() << "Sending data...";
 
-    if (m_client->publish(TOPIC_CPU_TEMP, qUtf8Printable(getCpuTemperature())) == -1)
+    if (m_client->publish(TOPIC_CPU_TEMP, qUtf8Printable(cpuTemp)) == -1)
         qDebug() << "Error while publish";
-    if (m_client->publish(TOPIC_CPU_LOAD, qUtf8Printable(GetCPULoad())) == -1)
+    if (m_client->publish(TOPIC_CPU_LOAD, qUtf8Printable(cpuLoad)) == -1)
         qDebug() << "Error while publish";
-    if (m_client->publish(TOPIC_DISK_FREE, qUtf8Printable(getDiskFreeSpace())) == -1)
+    if (m_client->publish(TOPIC_DISK_FREE, qUtf8Printable(diskFree)) == -1)
         qDebug() << "Error while publish";
 }
 
