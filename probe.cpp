@@ -64,7 +64,7 @@ QString Probe::GetCPULoad()
     QFile file(fileName);
 
     if (!file.open(QIODevice::ReadOnly)) {
-        return "";
+        return "Error opening file";
     }
 
     QTextStream in(&file);
