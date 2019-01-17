@@ -3,7 +3,7 @@ Probe Application that read cpu temperature, cpu usage and free disk space on ro
 These values are published using MQttClient with a initial sampling time of 1 second.
 The application subscribe a command topic to change sampling interval.
 
-This is part of a example test, https://github.com/collaone/MQTT_PRJ_DATADISPLAY is the application that interact with the probe.
+This is part of a example test, [DataDisplay](https://github.com/collaone/MQTT_PRJ_DATADISPLAY) is the application that interact with the probe.
 
 
 
@@ -13,4 +13,3 @@ Mqtt library must be installed.
 
 ## Usage
 Install a MQTT broker (e.g. mosquitto)
-
