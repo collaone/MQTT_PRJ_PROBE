@@ -11,5 +11,13 @@ This is part of a example test, [DataDisplay](https://github.com/collaone/MQTT_P
 It works on linus system, with Qt5.12.
 Mqtt library must be installed.
 
+## Build
+```c++
+qmake Probe.pro
+make
+```
+
 ## Usage
 Install a MQTT broker (e.g. mosquitto)
+Start application.
+
