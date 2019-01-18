@@ -14,6 +14,8 @@ Probe::Probe(QObject *parent)
 
     connect(m_client, &QMqttClient::connected, this, &Probe::onConnect);
 
+    connect(m_client, &QMqttClient::disconnected, this, &Probe::onDisconnect);
+
     connect(m_client, &QMqttClient::messageReceived, this, [this](const QByteArray &message) {
         qDebug() << "New sampling Interval: " << message.toInt();
         timer.setInterval(message.toInt());
@@ -51,6 +53,9 @@ void Probe::doWork()
     if (m_client->publish(TOPIC_DISK_FREE, qUtf8Printable(diskFree)) == -1)
         qDebug() << "Error while publish";
 }
+
+
+/*-- get values --*/
 
 QString Probe::getCpuTemperature()
 {
@@ -118,6 +123,10 @@ QString Probe::getDiskFreeSpace()
     return QString::number(storage.bytesAvailable()/1024/1024).append(" MB");
 }
 
+/**
+ * @brief Probe::onConnect
+ * Once connected to the broker, subcribe command topic and read values
+ */
 void Probe::onConnect() {
     qDebug() << "Connected.";
 
@@ -125,4 +134,14 @@ void Probe::onConnect() {
         qDebug() << "Error in subscribe";
 
     doWork();
+}
+
+/**
+ * @brief Display::onDisconnect
+ * Once disconnected from the broker, destroy
+ */
+void Probe::onDisconnect()
+{
+    delete m_client;
+    m_client = nullptr;
 }

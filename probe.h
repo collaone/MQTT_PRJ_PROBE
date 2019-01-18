@@ -17,6 +17,7 @@ signals:
 
 public slots:
     void onConnect();
+    void onDisconnect();
     void doWork();
 
 private:
