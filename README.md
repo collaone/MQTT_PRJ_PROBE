@@ -18,6 +18,5 @@ make
 ```
 
 ## Usage
-Install a MQTT broker (e.g. mosquitto)
-Start application.
+Install a MQTT broker (e.g. mosquitto) and start application.
 
