@@ -9,7 +9,7 @@ class Probe : public QObject
 {
     Q_OBJECT
 public:
-    explicit Probe(QObject *parent = nullptr);
+    Probe(QObject *parent = nullptr);
 
     void init();
 

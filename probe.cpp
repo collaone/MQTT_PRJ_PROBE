@@ -22,13 +22,13 @@ Probe::Probe(QObject *parent)
     });
 
     connect(&timer, SIGNAL (timeout()), this, SLOT (doWork()));
-    timer.start(1000);
 }
 
 void Probe::init()
 {
     qDebug() << "Connecting...";
     m_client->connectToHost();
+    timer.start(1000);
 }
 
 /**
@@ -44,14 +44,25 @@ void Probe::doWork()
     qDebug() << " - CPU Temp: " << cpuTemp
              << " - CPU Load: " << cpuLoad
              << " - Disk free space: " << diskFree;
-    qDebug() << "Sending data...";
 
-    if (m_client->publish(TOPIC_CPU_TEMP, qUtf8Printable(cpuTemp)) == -1)
-        qDebug() << "Error while publish";
-    if (m_client->publish(TOPIC_CPU_LOAD, qUtf8Printable(cpuLoad)) == -1)
-        qDebug() << "Error while publish";
-    if (m_client->publish(TOPIC_DISK_FREE, qUtf8Printable(diskFree)) == -1)
-        qDebug() << "Error while publish";
+    // if disconnected, try to reconnect
+    if (m_client->state() != QMqttClient::Connected)
+    {
+        qDebug() << "Client disconnected.";
+        m_client->connectToHost();
+    }
+    else
+    {
+        qDebug() << "Sending data...";
+
+        if (m_client->publish(TOPIC_CPU_TEMP, qUtf8Printable(cpuTemp)) == -1)
+            qDebug() << "Error while publish";
+        if (m_client->publish(TOPIC_CPU_LOAD, qUtf8Printable(cpuLoad)) == -1)
+            qDebug() << "Error while publish";
+        if (m_client->publish(TOPIC_DISK_FREE, qUtf8Printable(diskFree)) == -1)
+            qDebug() << "Error while publish";
+    }
+
 }
 
 
@@ -119,7 +130,7 @@ QString Probe::GetCPULoad()
 QString Probe::getDiskFreeSpace()
 {
     QStorageInfo storage = QStorageInfo::root();
-
+    storage.refresh();
     return QString::number(storage.bytesAvailable()/1024/1024).append(" MB");
 }
 
@@ -132,8 +143,6 @@ void Probe::onConnect() {
 
     if (!m_client->subscribe(TOPIC_COMMAND, 0))
         qDebug() << "Error in subscribe";
-
-    doWork();
 }
 
 /**
@@ -142,6 +151,6 @@ void Probe::onConnect() {
  */
 void Probe::onDisconnect()
 {
-    delete m_client;
-    m_client = nullptr;
+    qDebug() << "Connection lost.";
 }
+
